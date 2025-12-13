@@ -48,7 +48,7 @@
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 12px;
     }
 
@@ -137,11 +137,22 @@
             <option value="no">不显示</option>
           </select>
         </div>
+      </div>
+        <div>
+          <label>最大数字</label>
+          <input type="number" id="maxNum" value="20" />
+        </div>
         <div>
           <label>题目数量</label>
           <input type="number" id="count" value="20" />
         </div>
-      </div>
+        <div>
+          <label>是否显示答案</label>
+          <select id="showAnswer">
+            <option value="yes">显示</option>
+            <option value="no">不显示</option>
+          </select>
+        </div>
       </div>
 
       <div class="actions">
@@ -151,7 +162,7 @@
     </div>
 
     <div class="card">
-      <div id="output" class="output">点击“生成题目”开始吧～</div>
+      <div id="output">点击“生成题目”开始吧～</div>
     </div>
 
     <footer>

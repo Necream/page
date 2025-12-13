@@ -48,7 +48,7 @@
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 12px;
     }
 
@@ -127,21 +127,12 @@
           <input type="number" id="count" value="20" />
         </div>
         <div>
-          <label>连加 / 连减项数</label>
-          <input type="number" id="steps" value="2" min="2" />
-        </div>
-        <div>
           <label>是否显示答案</label>
           <select id="showAnswer">
             <option value="yes">显示</option>
             <option value="no">不显示</option>
           </select>
         </div>
-        <div>
-          <label>题目数量</label>
-          <input type="number" id="count" value="20" />
-        </div>
-      </div>
       </div>
 
       <div class="actions">
@@ -168,45 +159,29 @@
       const min = Number(document.getElementById('minNum').value);
       const max = Number(document.getElementById('maxNum').value);
       const count = Number(document.getElementById('count').value);
-      const steps = Number(document.getElementById('steps').value);
       const showAnswer = document.getElementById('showAnswer').value === 'yes';
 
-      if (min > max || count <= 0 || steps < 2) {
+      if (min > max || count <= 0) {
         alert('参数不太对哦，请检查一下～');
         return;
       }
 
+      const ops = ['+', '-'];
       let result = '';
 
       for (let i = 1; i <= count; i++) {
-        let current = rand(min, max);
-        let expr = `${current}`;
+        let a = rand(min, max);
+        let b = rand(min, max);
+        let op = ops[rand(0, ops.length - 1)];
 
-        for (let s = 1; s < steps; s++) {
-          let op, next;
-          let attempts = 0;
-
-          do {
-            op = Math.random() > 0.5 ? '+' : '-';
-            next = rand(min, max);
-            attempts++;
-            if (attempts > 50) break;
-          } while (
-            (op === '+' && current + next > max) ||
-            (op === '-' && current - next < min)
-          );
-
-          if (op === '+') {
-            current += next;
-          } else {
-            current -= next;
-          }
-
-          expr += ` ${op} ${next}`;
+        // 避免出现负数结果（更适合小学生）
+        if (op === '-' && a < b) {
+          [a, b] = [b, a];
         }
 
-        result += `${i}. ${expr} = `;
-        result += showAnswer ? current : '';
+        const answer = op === '+' ? a + b : a - b;
+        result += `${i}. ${a} ${op} ${b} = `;
+        result += showAnswer ? answer : '';
         result += '\n';
       }
 
