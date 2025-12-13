@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小学生口算题生成器</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --primary: #4f46e5;
+      --secondary: #22c55e;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .btn-generate {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-copy {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .output {
+      white-space: pre-wrap;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧮 小学生口算题生成器</h1>
+
+    <div class="card">
+      <div class="form-grid">
+        <div>
+          <label>最小数字</label>
+          <input type="number" id="minNum" value="1" />
+        </div>
+        <div>
+          <label>最大数字</label>
+          <input type="number" id="maxNum" value="20" />
+        </div>
+        <div>
+          <label>题目数量</label>
+          <input type="number" id="count" value="20" />
+        </div>
+        <div>
+          <label>是否显示答案</label>
+          <select id="showAnswer">
+            <option value="yes">显示</option>
+            <option value="no">不显示</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-generate" onclick="generate()">生成题目</button>
+        <button class="btn-copy" onclick="copyText()">复制结果</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="output" class="output">点击“生成题目”开始吧～</div>
+    </div>
+
+    <footer>
+      适合手机 / 电脑使用 · 可直接打印或粘贴到作业中
+    </footer>
+  </div>
+
+  <script>
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generate() {
+      const min = Number(document.getElementById('minNum').value);
+      const max = Number(document.getElementById('maxNum').value);
+      const count = Number(document.getElementById('count').value);
+      const showAnswer = document.getElementById('showAnswer').value === 'yes';
+
+      if (min > max || count <= 0) {
+        alert('参数不太对哦，请检查一下～');
+        return;
+      }
+
+      const ops = ['+', '-'];
+      let result = '';
+
+      for (let i = 1; i <= count; i++) {
+        let a = rand(min, max);
+        let b = rand(min, max);
+        let op = ops[rand(0, ops.length - 1)];
+
+        // 避免出现负数结果（更适合小学生）
+        if (op === '-' && a < b) {
+          [a, b] = [b, a];
+        }
+
+        const answer = op === '+' ? a + b : a - b;
+        result += `${i}. ${a} ${op} ${b} = `;
+        result += showAnswer ? answer : '';
+        result += '\n';
+      }
+
+      document.getElementById('output').textContent = result;
+    }
+
+    function copyText() {
+      const text = document.getElementById('output').textContent;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('已经帮你复制好啦～');
+      });
+    }
+  </script>
+</body>
+</html>
