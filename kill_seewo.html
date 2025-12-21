@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>POST Sender</title>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: system-ui, sans-serif;
+            background: #f6f7f9;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            margin-top: 16px;
+            width: 32px;
+            height: 32px;
+            border: 4px solid #ddd;
+            border-top-color: #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .status {
+            margin-top: 12px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <button id="sendBtn">发送</button>
+    <div class="spinner" id="spinner"></div>
+    <div class="status" id="status"></div>
+</div>
+
+<script>
+    const btn = document.getElementById('sendBtn');
+    const spinner = document.getElementById('spinner');
+    const status = document.getElementById('status');
+
+    btn.onclick = async () => {
+        btn.disabled = true;
+        spinner.style.display = 'inline-block';
+        status.textContent = '';
+
+        try {
+            const res = await fetch(
+                'https://inclusive-nonelastic-marcellus.ngrok-free.app',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: 'kill_seewo'
+                }
+            );
+
+            status.textContent = res.ok ? '发送成功' : '发送失败';
+        } catch (e) {
+            status.textContent = '请求异常';
+        } finally {
+            spinner.style.display = 'none';
+            btn.disabled = false;
+        }
+    };
+</script>
+</body>
+</html>
